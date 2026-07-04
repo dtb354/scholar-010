@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { deletePhoto } from './photos';
 
 // Local-only data that is NOT part of the online JSON: favorites + journal
 // entries. Persisted on-device via AsyncStorage so it survives app restarts.
@@ -48,7 +49,7 @@ export async function getEntries(spotId) {
 /**
  * Adds a journal entry for a spot.
  * @param {number} spotId
- * @param {{ note: string, mood: number, duration: number }} data
+ * @param {{ note: string, mood: number, duration: number, photos: string[] }} data
  * @returns the created entry
  */
 export async function addEntry(spotId, data) {
@@ -59,6 +60,7 @@ export async function addEntry(spotId, data) {
     note: data.note ?? '',
     mood: data.mood ?? 3,
     duration: data.duration ?? 0,
+    photos: data.photos ?? [],
     createdAt: new Date().toISOString(),
   };
   const next = [entry, ...entries];
@@ -70,7 +72,7 @@ export async function addEntry(spotId, data) {
  * Updates an existing journal entry for a spot.
  * @param {number} spotId
  * @param {string} entryId
- * @param {{ note: string, mood: number, duration: number }} data
+ * @param {{ note: string, mood: number, duration: number, photos: string[] }} data
  * @returns the new list of entries
  */
 export async function updateEntry(spotId, entryId, data) {
@@ -82,6 +84,7 @@ export async function updateEntry(spotId, entryId, data) {
           note: data.note ?? e.note,
           mood: data.mood ?? e.mood,
           duration: data.duration ?? e.duration,
+          photos: data.photos ?? e.photos ?? [],
         }
       : e
   );
@@ -91,6 +94,9 @@ export async function updateEntry(spotId, entryId, data) {
 
 export async function deleteEntry(spotId, entryId) {
   const entries = await getEntries(spotId);
+  // Also remove the entry's photo files from device storage.
+  const removed = entries.find((e) => e.id === entryId);
+  (removed?.photos ?? []).forEach(deletePhoto);
   const next = entries.filter((e) => e.id !== entryId);
   await AsyncStorage.setItem(journalKey(spotId), JSON.stringify(next));
   return next;

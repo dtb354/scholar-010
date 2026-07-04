@@ -39,6 +39,13 @@
         {
           "locationWhenInUsePermission": "This app uses your location to show study spots near you on the map."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "This app uses your photos so you can attach them to journal entries.",
+          "cameraPermission": "This app uses your camera so you can add photos to journal entries."
+        }
       ]
     ]
   }

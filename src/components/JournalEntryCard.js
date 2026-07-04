@@ -1,6 +1,7 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { moodInfo } from '../constants/moods';
+import { photoUri } from '../storage/photos';
 
 function formatDate(iso) {
   const d = new Date(iso);
@@ -72,6 +73,23 @@ export default function JournalEntryCard({ entry, onShare, onEdit, onDelete }) {
         <Text className="mt-3 text-sm leading-5 text-slate-600 dark:text-slate-300">
           {entry.note}
         </Text>
+      ) : null}
+
+      {/* Photos stored on the device for this entry */}
+      {entry.photos?.length ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="mt-3"
+        >
+          {entry.photos.map((name) => (
+            <Image
+              key={name}
+              source={{ uri: photoUri(name) }}
+              className="mr-2 h-28 w-28 rounded-xl"
+            />
+          ))}
+        </ScrollView>
       ) : null}
     </View>
   );
