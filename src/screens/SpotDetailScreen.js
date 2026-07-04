@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { View, Text, FlatList, Pressable } from 'react-native';
+import { View, Text, FlatList, Pressable, Alert, Share } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import Screen from '../components/Screen';
@@ -9,7 +9,16 @@ import FavoriteButton from '../components/FavoriteButton';
 import JournalEntryCard from '../components/JournalEntryCard';
 import EmptyState from '../components/EmptyState';
 import { useFavorites } from '../context/FavoritesContext';
+import { moodInfo } from '../constants/moods';
 import * as storage from '../storage/storage';
+
+function formatShareDate(iso) {
+  return new Date(iso).toLocaleDateString(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
 
 export default function SpotDetailScreen({ route, navigation }) {
   const { spot } = route.params;
@@ -23,9 +32,22 @@ export default function SpotDetailScreen({ route, navigation }) {
     }, [spot.id])
   );
 
-  const handleDelete = async (entryId) => {
-    const next = await storage.deleteEntry(spot.id, entryId);
-    setEntries(next);
+  const handleEdit = (entry) => {
+    navigation.navigate('AddEntry', { spot, entry });
+  };
+
+  const handleDelete = (entryId) => {
+    Alert.alert('Delete entry', 'This journal entry will be removed.', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          const next = await storage.deleteEntry(spot.id, entryId);
+          setEntries(next);
+        },
+      },
+    ]);
   };
 
   // Simple progress summary derived from local entries.
@@ -34,6 +56,50 @@ export default function SpotDetailScreen({ route, navigation }) {
   const avgMood = sessions
     ? (entries.reduce((sum, e) => sum + e.mood, 0) / sessions).toFixed(1)
     : '–';
+
+  // Shares a single study session together with the hotspot info.
+  const handleShareEntry = async (entry) => {
+    const mood = moodInfo(entry.mood);
+    const lines = [
+      `📚 Study session at ${spot.title}`,
+      `${mood.emoji} Felt ${mood.label.toLowerCase()} · ${entry.duration} min · ${formatShareDate(entry.createdAt)}`,
+      entry.note ? `"${entry.note}"` : null,
+      spot.coords
+        ? `📍 https://maps.google.com/?q=${spot.coords.latitude},${spot.coords.longitude}`
+        : null,
+    ];
+    await Share.share({
+      title: `Study session at ${spot.title}`,
+      message: lines.filter((l) => l !== null).join('\n'),
+    });
+  };
+
+  // Shares the hotspot info together with the locally stored journal data.
+  const handleShare = async () => {
+    const lines = [
+      `📚 ${spot.title}`,
+      spot.description,
+      spot.coords
+        ? `📍 https://maps.google.com/?q=${spot.coords.latitude},${spot.coords.longitude}`
+        : null,
+      '',
+      `My progress here: ${sessions} session${sessions === 1 ? '' : 's'}, ${totalMinutes} min total, avg mood ${avgMood}`,
+    ];
+    if (sessions > 0) {
+      lines.push('', 'Journal:');
+      for (const e of entries) {
+        const mood = moodInfo(e.mood);
+        lines.push(
+          `${mood.emoji} ${mood.label} · ${e.duration} min · ${formatShareDate(e.createdAt)}` +
+            (e.note ? `\n"${e.note}"` : '')
+        );
+      }
+    }
+    await Share.share({
+      title: spot.title,
+      message: lines.filter((l) => l !== null).join('\n'),
+    });
+  };
 
   return (
     <Screen>
@@ -55,11 +121,16 @@ export default function SpotDetailScreen({ route, navigation }) {
                     {spot.description}
                   </Text>
                 </View>
-                <FavoriteButton
-                  active={isFavorite(spot.id)}
-                  onPress={() => toggle(spot.id)}
-                  size={26}
-                />
+                <View className="flex-row items-center">
+                  <Pressable onPress={handleShare} hitSlop={8} className="mr-3">
+                    <Ionicons name="share-outline" size={24} color="#64748b" />
+                  </Pressable>
+                  <FavoriteButton
+                    active={isFavorite(spot.id)}
+                    onPress={() => toggle(spot.id)}
+                    size={26}
+                  />
+                </View>
               </View>
               <View className="mt-3 flex-row items-center justify-between">
                 <Badge kind={spot.kind} />
@@ -97,7 +168,12 @@ export default function SpotDetailScreen({ route, navigation }) {
           </View>
         }
         renderItem={({ item }) => (
-          <JournalEntryCard entry={item} onDelete={handleDelete} />
+          <JournalEntryCard
+            entry={item}
+            onShare={handleShareEntry}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
         )}
         ListEmptyComponent={
           <EmptyState

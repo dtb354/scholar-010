@@ -66,6 +66,29 @@ export async function addEntry(spotId, data) {
   return entry;
 }
 
+/**
+ * Updates an existing journal entry for a spot.
+ * @param {number} spotId
+ * @param {string} entryId
+ * @param {{ note: string, mood: number, duration: number }} data
+ * @returns the new list of entries
+ */
+export async function updateEntry(spotId, entryId, data) {
+  const entries = await getEntries(spotId);
+  const next = entries.map((e) =>
+    e.id === entryId
+      ? {
+          ...e,
+          note: data.note ?? e.note,
+          mood: data.mood ?? e.mood,
+          duration: data.duration ?? e.duration,
+        }
+      : e
+  );
+  await AsyncStorage.setItem(journalKey(spotId), JSON.stringify(next));
+  return next;
+}
+
 export async function deleteEntry(spotId, entryId) {
   const entries = await getEntries(spotId);
   const next = entries.filter((e) => e.id !== entryId);

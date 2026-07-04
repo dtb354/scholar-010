@@ -15,7 +15,7 @@ function formatDate(iso) {
  * Displays a single journal entry (mood, duration, note, date).
  * Reused wherever entries are listed.
  */
-export default function JournalEntryCard({ entry, onDelete }) {
+export default function JournalEntryCard({ entry, onShare, onEdit, onDelete }) {
   const mood = moodInfo(entry.mood);
 
   return (
@@ -41,6 +41,24 @@ export default function JournalEntryCard({ entry, onDelete }) {
                 {entry.duration} min
               </Text>
             </View>
+          ) : null}
+          {onShare ? (
+            <Pressable
+              onPress={() => onShare(entry)}
+              hitSlop={8}
+              className="mr-3"
+            >
+              <Ionicons name="share-outline" size={16} color="#64748b" />
+            </Pressable>
+          ) : null}
+          {onEdit ? (
+            <Pressable
+              onPress={() => onEdit(entry)}
+              hitSlop={8}
+              className="mr-3"
+            >
+              <Ionicons name="pencil-outline" size={16} color="#64748b" />
+            </Pressable>
           ) : null}
           {onDelete ? (
             <Pressable onPress={() => onDelete(entry.id)} hitSlop={8}>

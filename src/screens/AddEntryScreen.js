@@ -17,15 +17,22 @@ import * as storage from '../storage/storage';
 const DURATIONS = [15, 30, 45, 60, 90, 120];
 
 export default function AddEntryScreen({ route, navigation }) {
-  const { spot } = route.params;
-  const [mood, setMood] = useState(3);
-  const [duration, setDuration] = useState(30);
-  const [note, setNote] = useState('');
+  // When `entry` is passed the screen edits that entry instead of adding one.
+  const { spot, entry } = route.params;
+  const isEditing = !!entry;
+  const [mood, setMood] = useState(entry?.mood ?? 3);
+  const [duration, setDuration] = useState(entry?.duration ?? 30);
+  const [note, setNote] = useState(entry?.note ?? '');
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
     setSaving(true);
-    await storage.addEntry(spot.id, { mood, duration, note: note.trim() });
+    const data = { mood, duration, note: note.trim() };
+    if (isEditing) {
+      await storage.updateEntry(spot.id, entry.id, data);
+    } else {
+      await storage.addEntry(spot.id, data);
+    }
     navigation.goBack();
   };
 
@@ -41,7 +48,7 @@ export default function AddEntryScreen({ route, navigation }) {
           keyboardShouldPersistTaps="handled"
         >
           <Text className="text-sm text-slate-500 dark:text-slate-400">
-            New entry at
+            {isEditing ? 'Editing entry at' : 'New entry at'}
           </Text>
           <Text className="mb-5 text-xl font-extrabold text-slate-900 dark:text-white">
             {spot.title}
@@ -101,7 +108,7 @@ export default function AddEntryScreen({ route, navigation }) {
           />
 
           <Button
-            label={saving ? 'Saving…' : 'Save entry'}
+            label={saving ? 'Saving…' : isEditing ? 'Save changes' : 'Save entry'}
             icon="checkmark"
             onPress={handleSave}
             disabled={saving}

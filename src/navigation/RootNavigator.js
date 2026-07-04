@@ -61,7 +61,10 @@ export default function RootNavigator() {
         <Stack.Screen
           name="AddEntry"
           component={AddEntryScreen}
-          options={{ title: 'New Entry', presentation: 'modal' }}
+          options={({ route }) => ({
+            title: route.params?.entry ? 'Edit Entry' : 'New Entry',
+            presentation: 'modal',
+          })}
         />
         <Stack.Screen
           name="Settings"
