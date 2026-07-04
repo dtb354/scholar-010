@@ -3,9 +3,9 @@
 // (e.g. MapView customMapStyle, StatusBar, navigation header options).
 
 export const palette = {
-  brand: '#4f46e5',
-  brandLight: '#6366f1',
-  brandDark: '#4338ca',
+  brand: '#008100',
+  brandLight: '#00a300',
+  brandDark: '#005c00',
 };
 
 export const themes = {

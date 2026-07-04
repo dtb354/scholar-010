@@ -67,7 +67,7 @@ export default function SpotDetailScreen({ route, navigation }) {
                   onPress={() => navigation.navigate('Map', { spotId: spot.id })}
                 >
                   <View className="flex-row items-center">
-                    <Ionicons name="map-outline" size={15} color="#6366f1" />
+                    <Ionicons name="map-outline" size={15} color="#00a300" />
                     <Text className="ml-1 text-xs font-semibold text-brand dark:text-brand-light">
                       View on map
                     </Text>
@@ -115,7 +115,7 @@ function Stat({ label, value }) {
   return (
     <View className="items-center">
       <Text className="text-2xl font-extrabold text-white">{value}</Text>
-      <Text className="text-xs text-indigo-100">{label}</Text>
+      <Text className="text-xs text-green-100">{label}</Text>
     </View>
   );
 }

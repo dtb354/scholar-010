@@ -10,7 +10,7 @@ export default function Badge({ kind }) {
   const { label, icon } = kindInfo(kind);
   return (
     <View className="flex-row items-center self-start rounded-full bg-brand/10 px-2.5 py-1 dark:bg-brand/20">
-      <Ionicons name={icon} size={12} color="#6366f1" style={{ marginRight: 4 }} />
+      <Ionicons name={icon} size={12} color="#00a300" style={{ marginRight: 4 }} />
       <Text className="text-xs font-semibold text-brand dark:text-brand-light">
         {label}
       </Text>

@@ -20,7 +20,7 @@ export default function HomeScreen({ navigation }) {
     return (
       <Screen>
         <View className="flex-1 items-center justify-center">
-          <ActivityIndicator size="large" color="#6366f1" />
+          <ActivityIndicator size="large" color="#00a300" />
           <Text className="mt-3 text-slate-500 dark:text-slate-400">
             Loading study spots…
           </Text>

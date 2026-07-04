@@ -79,7 +79,7 @@ export default function MapScreen({ route, navigation }) {
             key={spot.id}
             coordinate={spot.coords}
             title={spot.title}
-            pinColor={spot.id === focusSpotId ? '#4f46e5' : '#ef4444'}
+            pinColor={spot.id === focusSpotId ? '#008100' : '#ef4444'}
           >
             <Callout onPress={() => navigation.navigate('SpotDetail', { spot })}>
               <View style={{ width: 200, padding: 4 }}>
@@ -89,7 +89,7 @@ export default function MapScreen({ route, navigation }) {
                 <Text style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>
                   {spot.description}
                 </Text>
-                <Text style={{ fontSize: 12, color: '#4f46e5', marginTop: 6, fontWeight: '600' }}>
+                <Text style={{ fontSize: 12, color: '#008100', marginTop: 6, fontWeight: '600' }}>
                   Open journal ›
                 </Text>
               </View>
@@ -105,7 +105,7 @@ export default function MapScreen({ route, navigation }) {
           className="absolute bottom-6 right-5 h-12 w-12 items-center justify-center rounded-full bg-white shadow-lg dark:bg-slate-800"
           style={{ elevation: 4 }}
         >
-          <Ionicons name="locate" size={22} color="#4f46e5" />
+          <Ionicons name="locate" size={22} color="#008100" />
         </Pressable>
       ) : null}
     </View>

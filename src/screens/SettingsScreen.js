@@ -24,7 +24,7 @@ export default function SettingsScreen() {
             <Ionicons
               name={isDark ? 'moon' : 'sunny'}
               size={20}
-              color="#6366f1"
+              color="#00a300"
             />
           </View>
           <View>
@@ -39,7 +39,7 @@ export default function SettingsScreen() {
         <Switch
           value={isDark}
           onValueChange={toggleTheme}
-          trackColor={{ false: '#cbd5e1', true: '#6366f1' }}
+          trackColor={{ false: '#cbd5e1', true: '#00a300' }}
           thumbColor="#ffffff"
         />
       </View>

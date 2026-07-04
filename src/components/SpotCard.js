@@ -15,7 +15,7 @@ export default function SpotCard({ spot, isFavorite, onPress, onToggleFavorite, 
       className="mb-3 flex-row items-center rounded-2xl border border-slate-200 bg-white p-4 active:opacity-90 dark:border-slate-700 dark:bg-slate-800"
     >
       <View className="mr-3 h-11 w-11 items-center justify-center rounded-xl bg-brand/10 dark:bg-brand/20">
-        <Ionicons name="location" size={22} color="#6366f1" />
+        <Ionicons name="location" size={22} color="#00a300" />
       </View>
 
       <View className="flex-1">
@@ -42,7 +42,7 @@ export default function SpotCard({ spot, isFavorite, onPress, onToggleFavorite, 
               <Text className="mr-0.5 text-xs font-semibold text-brand dark:text-brand-light">
                 Journal
               </Text>
-              <Ionicons name="chevron-forward" size={13} color="#6366f1" />
+              <Ionicons name="chevron-forward" size={13} color="#00a300" />
             </Pressable>
           ) : null}
         </View>

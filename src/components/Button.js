@@ -30,7 +30,7 @@ export default function Button({
         <Ionicons
           name={icon}
           size={18}
-          color={isPrimary ? '#ffffff' : '#6366f1'}
+          color={isPrimary ? '#ffffff' : '#00a300'}
           style={{ marginRight: 8 }}
         />
       ) : null}
